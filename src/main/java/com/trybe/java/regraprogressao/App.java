@@ -51,6 +51,22 @@ public class App {
 
     System.out.printf("A nota final do período é: %.1f%%\n", finalGrade);
 
+    if (finalGrade >= 85) {
+      System.out.printf(
+              "Parabéns! Você alcançou %.1f%%! "
+                      +
+                      "Temos o prazer de informar que você obteve aprovação!\n",
+              finalGrade);
+    } else {
+      System.out.printf(
+              "Lamentamos informar que, com base na sua pontuação alcançada neste período, "
+                      +
+                      "%.1f%%, você não atingiu a pontuação mínima "
+                      +
+                      "necessária para sua aprovação.\n",
+              finalGrade);
+    }
+
     input.close();
   }
 }
