@@ -8,65 +8,98 @@ import java.util.Scanner;
 public class App {
 
   /**
-   * Metodo main.
+   * Main.
    */
   public static void main(String[] args) {
-    Scanner input = new Scanner(System.in);
+    Scanner sc = new Scanner(System.in);
 
     System.out.println("Digite a quantidade de atividades para cadastrar:");
-    int numberOfActivities = input.nextInt();
-    input.nextLine();
+    int quantidadeAtividadesCadastradas = sc.nextInt();
+    sc.nextLine();
 
-    String[] activities = new String[numberOfActivities];
-    double[] weights = new double[numberOfActivities];
-    double[] grades = new double[numberOfActivities];
-    double weightSum = 0;
+    String[] nomesAtividades = new String[quantidadeAtividadesCadastradas];
+    int[] pesosAtividade = new int[quantidadeAtividadesCadastradas];
+    int[] notasObtidas = new int[quantidadeAtividadesCadastradas];
+    int somaPesos = 0;
 
-    for (int i = 0; i < numberOfActivities; i++) {
+    for (int i = 0; i < quantidadeAtividadesCadastradas; i++) {
       System.out.printf("Digite o nome da atividade %d:\n", i + 1);
-      activities[i] = input.nextLine();
+      nomesAtividades[i] = sc.nextLine();
 
       System.out.printf("Digite o peso da atividade %d:\n", i + 1);
-      weights[i] = input.nextDouble();
-      weightSum += weights[i];
-      input.nextLine();
+      pesosAtividade[i] = getValidatedWeight(sc);
+
+      somaPesos += pesosAtividade[i];
+
+      System.out.printf("Digite a nota obtida para %s:\n", nomesAtividades[i]);
+      notasObtidas[i] = getValidatedGrade(sc);
+
+      sc.nextLine();
     }
 
-    if (weightSum != 100) {
-      System.out.println("A soma dos pesos deve ser igual a 100!");
-      input.close();
-      return;
+    if (somaPesos != 100) {
+      System.out.println("Erro: A soma dos pesos não é igual a 100.");
     }
 
-    for (int i = 0; i < numberOfActivities; i++) {
-      System.out.printf("Digite a nota obtida para %s:\n", activities[i]);
-      grades[i] = input.nextDouble();
-      input.nextLine();
+    double mediaPonderada = calculateWeightedAverage(
+            quantidadeAtividadesCadastradas, pesosAtividade, notasObtidas);
+
+    String resultadoFinal = mediaPonderada >= 85
+            ? "Parabéns! Você alcançou " + mediaPonderada
+            + "%! E temos o prazer de informar "
+            + "que você obteve aprovação!"
+            : "Lamentamos informar que, com base na sua pontuação alcançada " + "neste período, "
+            + mediaPonderada + "%, você não atingiu a pontuação mínima "
+            + "necessária para sua aprovação.";
+    System.out.println(resultadoFinal);
+  }
+
+  /**
+   * Validates and returns a valid weight for an activity.
+   *
+   * @param sc The Scanner instance for input.
+   * @return The validated weight.
+   */
+  private static int getValidatedWeight(Scanner sc) {
+    int weight = sc.nextInt();
+    while (weight < 1 || weight > 100) {
+      System.out.println("Erro: Peso inválido! O peso deve ser entre 1 e 100.");
+      System.out.println("Digite novamente o peso:");
+      weight = sc.nextInt();
     }
+    return weight;
+  }
 
-    double finalGrade = 0;
-    for (int i = 0; i < numberOfActivities; i++) {
-      finalGrade += grades[i] * weights[i] / 100;
+  /**
+   * Validates and returns a valid grade for an activity.
+   *
+   * @param sc The Scanner instance for input.
+   * @return The validated grade.
+   */
+  private static int getValidatedGrade(Scanner sc) {
+    int grade = sc.nextInt();
+    while (grade < 0 || grade > 100) {
+      System.out.println("Erro: Nota inválida! A nota deve ser entre 0 e 100.");
+      System.out.println("Digite novamente a nota:");
+      grade = sc.nextInt();
     }
+    return grade;
+  }
 
-    System.out.printf("A nota final do período é: %.1f%%\n", finalGrade);
-
-    if (finalGrade >= 85) {
-      System.out.printf(
-              "Parabéns! Você alcançou %.1f%%! "
-                      +
-                      "Temos o prazer de informar que você obteve aprovação!\n",
-              finalGrade);
-    } else {
-      System.out.printf(
-              "Lamentamos informar que, com base na sua pontuação alcançada neste período, "
-                      +
-                      "%.1f%%, você não atingiu a pontuação mínima "
-                      +
-                      "necessária para sua aprovação.\n",
-              finalGrade);
+  /**
+   * Calculates the weighted average of grades for all activities.
+   *
+   * @param quantidadeAtividades The number of activities.
+   * @param pesosAtividade       The weights of activities.
+   * @param notasObtidas         The obtained grades of activities.
+   * @return The calculated weighted average.
+   */
+  private static double calculateWeightedAverage(
+          int quantidadeAtividades, int[] pesosAtividade, int[] notasObtidas) {
+    double mediaPonderada = 0;
+    for (int i = 0; i < quantidadeAtividades; i++) {
+      mediaPonderada += ((double) notasObtidas[i] * pesosAtividade[i]) / 100;
     }
-
-    input.close();
+    return mediaPonderada;
   }
 }
