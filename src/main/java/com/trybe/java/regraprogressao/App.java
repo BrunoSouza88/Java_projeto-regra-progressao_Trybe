@@ -38,12 +38,15 @@ public class App {
       return;
     }
 
+    for (int i = 0; i < numberOfActivities; i++) {
+      System.out.printf("Digite a nota obtida para %s:\n", activities[i]);
+      grades[i] = input.nextDouble();
+      input.nextLine();
+    }
+
     double finalGrade = 0;
     for (int i = 0; i < numberOfActivities; i++) {
-      System.out.printf("Digite a nota da atividade %s:\n", activities[i]);
-      grades[i] = input.nextDouble();
       finalGrade += grades[i] * weights[i] / 100;
-      input.nextLine();
     }
 
     System.out.printf("A nota final do período é: %.1f%%\n", finalGrade);
